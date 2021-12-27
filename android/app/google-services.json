@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1082943380563",
+    "project_id": "tennis-together-13bc4",
+    "storage_bucket": "tennis-together-13bc4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082943380563:android:4c4214434cbcab01bdfaa6",
+        "android_client_info": {
+          "package_name": "com.example.tennis_together"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1082943380563-vse8mbaaj2urvtffl57nd1p6d48h2abr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFFHkY9TcHIwAqE8PCz9WqGqEssvbi7_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1082943380563-vse8mbaaj2urvtffl57nd1p6d48h2abr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1082943380563-hiq8sl33ler2qk2d44vtckt1esbgg3uo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tennisTogether"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
