@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 
 class MySchedule extends StatefulWidget {
   @override
-  _FirstState createState() => _FirstState();
+  _MyScheduleState createState() => _MyScheduleState();
 }
 
-class _FirstState extends State<MySchedule> {
+class _MyScheduleState extends State<MySchedule> {
   @override
   Widget build(BuildContext context) {
     return Container(

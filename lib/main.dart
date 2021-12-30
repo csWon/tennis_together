@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tennis_together/forget_pw.dart';
 
 import 'package:tennis_together/provider/page_notifier.dart';
 import 'package:tennis_together/my_home.dart';
@@ -21,39 +22,32 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   body:Center(
-    //     child: GestureDetector(
-    //       behavior: HitTestBehavior.translucent,
-    //         onTap: ()async{
-    //           print('before');
-    //           final f = FirebaseFirestore.instance;
-    //           await f.collection('profile').doc('abc').set({'abc??':'test'});
-    //           print('enter');
-    //         },
-    //     ),
-    //   ),
-    // );
-    return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => PageNotifier())],
-      child: MaterialApp(
-          title: 'demo',
-          home: Consumer<PageNotifier>(builder: (context, pageNotifier, child) {
-            return Navigator(
-              pages: [
-                MaterialPage(
-                    key: const ValueKey(MyHomePage.pageName),
-                    child: MyHomePage()),
-                if (pageNotifier.currentPage == AuthPage.pageName) AuthPage(),
-              ],
-              onPopPage: (route, result) {
-                if (!route.didPop(result)) {
-                  return false;
-                }
-                return true;
-              },
-            );
-          })),
+    return MaterialApp(
+      home:MyHomePage()
     );
+    //1111
+    // return MultiProvider(
+    //   providers: [ChangeNotifierProvider(create: (_) => PageNotifier())],
+    //   child: MaterialApp(
+    //       title: 'demo',
+    //       home: Consumer<PageNotifier>(builder: (context, pageNotifier, child) {
+    //         return Navigator(
+    //           pages: [
+    //             MaterialPage(
+    //                 key: const ValueKey(MyHomePage.pageName),
+    //                 child: MyHomePage()),
+    //             if (pageNotifier.currentPage == AuthPage.pageName) AuthPage(),
+    //           ],
+    //           onPopPage: (route, result) {
+    //             if (!route.didPop(result)) {
+    //               return false;
+    //             }
+    //             return true;
+    //           },
+    //         );
+    //       })),
+    // );
+
+    // return Scaffold(body: MyHomePage());
   }
 }

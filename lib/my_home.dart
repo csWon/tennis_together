@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tennis_together/auth_page.dart';
 import 'package:tennis_together/provider/page_notifier.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tennis_together/map.dart';
 import 'package:tennis_together/MySchedule.dart';
-import 'package:tennis_together/chatting.dart';
 import 'package:tennis_together/matchList.dart';
+
+import 'login_profile_switch.dart';
 
 class MyHomePage extends StatefulWidget {
   static const String pageName = 'MyHomePage';
@@ -18,33 +20,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final ValueNotifier<bool> _isLogin =
+      ValueNotifier<bool>(false); // ValueNotifier 변수 선언
+
   int _selectedIndex = 0;
+
+  // bool isLogin = FirebaseAuth.instance.currentUser == null ? false : true;
+
   final List<Widget> _children = [
     MatchListPage(),
     Map(),
     MySchedule(),
-    Chatting()
+    LoginProfileSwitch(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Tennis Together'), actions: [
-        IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              Provider.of<PageNotifier>(context, listen: false)
-                  .goToOtherPage(AuthPage.pageName);
-            })
-      ]),
-      body: _children[_selectedIndex]
-      // margin: EdgeInsets.all(20),`
-      //
-      // children: [
-      //   Image.asset('bg_tennis.jpeg'),
-      //   Icon(Icons.star)
-      // ]
-      ,
-
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text('Tennis Together'),
+        // actions: [
+        //   IconButton(
+        //       icon: Icon(Icons.logout),
+        //       onPressed: () {
+        //         print('login check');
+        //         Provider.of<PageNotifier>(context, listen: false)
+        //             .goToOtherPage(AuthPage.pageName);
+        //       })
+        // ]
+      ),
+      body: _children[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.grey,
@@ -57,6 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: (int index) {
           setState(() {
             _selectedIndex = index;
+            // FirebaseAuth auth = FirebaseAuth.instance;
+            // isLogin = auth.currentUser == null ? false : true;
+            // print(auth.currentUser);
+            // print(Text('islogin_' + isLogin.toString()));
           });
         },
         items: [
@@ -73,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.schedule),
           ),
           BottomNavigationBarItem(
-            label: Text('프로필').data,
+            label: _isLogin.value ? Text('프로필').data : Text('로그인').data,
             icon: Icon(Icons.person),
           ),
         ],
@@ -92,9 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //     ),
       //   )
       // ),
-
     );
-
 
     // return Scaffold(
     //     appBar: AppBar(title: Text('Tennis Together'), actions: [
@@ -105,5 +113,16 @@ class _MyHomePageState extends State<MyHomePage> {
     //                 .goToOtherPage(AuthPage.pageName);
     //           })
     //     ]));
+  }
+}
+
+class BottomNavigationBarProvider with ChangeNotifier {
+  int _currentIndex = 0;
+  // bool
+  int get currentIndex => _currentIndex;
+
+  set currentIndex(int index) {
+    _currentIndex = index;
+    notifyListeners();
   }
 }

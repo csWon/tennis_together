@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tennis_together/forget_pw.dart';
 import 'package:tennis_together/provider/page_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:tennis_together/welcome_login.dart';
 
 class AuthPage extends Page {
   static final pageName = 'AuthPage';
@@ -45,10 +48,9 @@ class _AuthWidgetState extends State<AuthWidget> {
                 fit: BoxFit.cover, image: AssetImage('assets/CNxj.gif'))),
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.transparent, elevation: 0.0,
-            leading: BackButton(
-                color: Colors.black
-            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0.0,
+            leading: BackButton(color: Colors.black),
           ),
           backgroundColor: Colors.transparent,
           body: SafeArea(
@@ -101,7 +103,6 @@ class _AuthWidgetState extends State<AuthWidget> {
                           )),
                     ],
                   ),
-                  SizedBox(height: 16),
                   _buildTextFormField('Email Address', _emailController),
                   SizedBox(height: 8),
                   _buildTextFormField('Password', _PasswordController),
@@ -112,21 +113,40 @@ class _AuthWidgetState extends State<AuthWidget> {
                       curve: _curve,
                       child: _buildTextFormField(
                           'Confirm Password', _cPasswordlController)),
-                  SizedBox(height: 16),
+                  // SizedBox(height: 8),
+                  TextButton(
+                      onPressed: isRegister
+                          ? null
+                          : () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ForgetPw()));
+                            },
+                      child: Text(
+                        'Forget Password?',
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight:
+                                isRegister ? FontWeight.w400 : FontWeight.w600,
+                            color:
+                                isRegister ? Colors.black45 : Colors.black87),
+                      )),
+                  // SizedBox(height: 16),
                   ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           print('빈 입력창이 없습니다.');
                           isRegister ? _register() : _login(context);
-                          // Provider.of<PageNotifier>(context, listen: false)
-                          //     .goToMain();
+                          Provider.of<PageNotifier>(context, listen: false)
+                              .goToOtherPage('WelcomLogin');
                         }
                       },
                       style: ButtonStyle(
                         foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
+                            MaterialStateProperty.all<Color>(Colors.black),
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.green),
+                            MaterialStateProperty.all<Color>(Colors.green),
                       ),
                       child: Text(isRegister ? 'Register' : 'Login')),
                   SizedBox(height: 8),
@@ -142,6 +162,7 @@ class _AuthWidgetState extends State<AuthWidget> {
                     alignment: MainAxisAlignment.center,
                     children: [
                       _buildSocialButton('assets/google_logo.png', () {
+
                         Provider.of<PageNotifier>(context, listen: false)
                             .goToMain();
                       }),
@@ -164,23 +185,36 @@ class _AuthWidgetState extends State<AuthWidget> {
     try {
       final UserCredential result = await FirebaseAuth.instance
           .signInWithEmailAndPassword(
-          email: _emailController.text, password: _PasswordController.text);
+              email: _emailController.text, password: _PasswordController.text);
 
       final User = result.user;
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('로그인 성공'),
+          duration: const Duration(seconds: 5)));
+
+
+
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => WelcomeLogin()));
+      Provider.of<PageNotifier>(context, listen: false).goToMain();
+      // print(User);
     } on FirebaseAuthException catch (e) {
       Text txt = const Text('알 수 없는 예외가 발생했습니다.');
       if (e.code == 'user-not-found') {
-        print('등록되지 않은 계정입니다.');
+        txt = Text('등록되지 않은 계정입니다.');
       } else if (e.code == 'wrong-password') {
-        print('틀린 비밀번호가 입력되었습니다.');
+        txt = Text('틀린 비밀번호가 입력되었습니다.');
       } else if (e.code == 'invalid-email') {
-        print('올바른 이메일을 입력해주세요.');
+        txt = Text('올바른 이메일을 입력해주세요.');
       } else if (e.code == 'user-disabled:') {
-        print('비활성화된 계정입니.');
+        txt = Text('비활성화된 계정입니다.');
       }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: txt,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 5),
       ));
     }
   }
@@ -195,20 +229,17 @@ class _AuthWidgetState extends State<AuthWidget> {
     try {
       final UserCredential result = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-          email: _emailController.text, password: _PasswordController.text);
-
-      final User = result.user;
+              email: _emailController.text, password: _PasswordController.text);
 
       Provider.of<PageNotifier>(context, listen: false).goToMain();
     } on FirebaseAuthException catch (e) {
       Text txt = const Text('알 수 없는 예외가 발생했습니다.');
       if (e.code == 'weak-password') {
         txt = const Text('비밀번호가 조건에 부합되지 않습니다.(6자리 이상)');
-        print(e.message);
       } else if (e.code == 'email-already-in-use') {
         txt = const Text('이미 등록된 이메일 주소 입니다.');
       } else if (e.code == 'invalid-email') {
-        print('올바른 이메일을 입력해주세요.');
+        txt = Text('올바른 이메일을 입력해주세요.');
       } else if (e.code == 'operation-not-allowed') {
         txt = const Text('허용되지 않은 요청입니다.');
         // 전자 메일/암호 계정이 활성화되지 않은 경우 던져집니다. Firebase 콘솔의 Auth 탭에서 이메일/암호 계정을 활성화합니다.
@@ -244,13 +275,13 @@ class _AuthWidgetState extends State<AuthWidget> {
         child: Text(buttonName));
   }
 
-  TextFormField _buildTextFormField(String labelText,
-      TextEditingController ctlr) {
+  TextFormField _buildTextFormField(
+      String labelText, TextEditingController ctlr) {
     OutlineInputBorder _border = OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide(color: Colors.transparent, width: 0));
 
-    bool _isEmailAddress = (labelText == "Email Address")? true : false;
+    bool _isEmailAddress = (labelText == "Email Address") ? true : false;
     bool _passwordInVisible = !_isEmailAddress;
 
     return TextFormField(
@@ -269,6 +300,7 @@ class _AuthWidgetState extends State<AuthWidget> {
         return null;
       },
       decoration: InputDecoration(
+          // icon: _isEmailAddress? Icon(Icons.email): Icon(Icons.vpn_key),
           hintText: labelText,
           filled: true,
           fillColor: Colors.white70,
@@ -277,5 +309,15 @@ class _AuthWidgetState extends State<AuthWidget> {
           focusedBorder: _border,
           labelStyle: TextStyle(color: Colors.white)),
     );
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    final OAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }
