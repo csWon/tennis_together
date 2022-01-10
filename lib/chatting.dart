@@ -96,3 +96,15 @@ class _ChattingState extends State<Chatting> {
     _animListKey.currentState?.insertItem(0);
   }
 }
+// TextButton.icon(
+// style: TextButton.styleFrom(
+// textStyle: TextStyle(color: Colors.blue),
+// backgroundColor: Colors.white,
+// shape:RoundedRectangleBorder(
+// borderRadius: BorderRadius.circular(24.0),
+// ),
+// ),
+// onPressed: () => {},
+// icon: Icon(Icons.send_rounded,),
+// label: Text('Contact me',),
+// ),

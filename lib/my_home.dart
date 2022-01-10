@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tennis_together/auth_page.dart';
+import 'package:tennis_together/chatting.dart';
+import 'package:tennis_together/provider/login_notifier.dart';
 import 'package:tennis_together/provider/page_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ import 'login_profile_switch.dart';
 class MyHomePage extends StatefulWidget {
   static const String pageName = 'MyHomePage';
 
+  String get _pageName => pageName;
+
   // final String title;
   // String get pageName => pageName;
   @override
@@ -20,109 +24,151 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final ValueNotifier<bool> _isLogin =
-      ValueNotifier<bool>(false); // ValueNotifier 변수 선언
-
   int _selectedIndex = 0;
-
-  // bool isLogin = FirebaseAuth.instance.currentUser == null ? false : true;
-
   final List<Widget> _children = [
-    MatchListPage(),
+    MatchList(),
     Map(),
     MySchedule(),
     LoginProfileSwitch(),
+    Chatting(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text('Tennis Together'),
-        // actions: [
-        //   IconButton(
-        //       icon: Icon(Icons.logout),
-        //       onPressed: () {
-        //         print('login check');
-        //         Provider.of<PageNotifier>(context, listen: false)
-        //             .goToOtherPage(AuthPage.pageName);
-        //       })
-        // ]
-      ),
-      body: _children[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.grey,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white.withOpacity(.60),
-        selectedFontSize: 14,
-        unselectedFontSize: 14,
-        currentIndex: _selectedIndex,
-        //현재 선택된 Index
-        onTap: (int index) {
-          setState(() {
-            _selectedIndex = index;
-            // FirebaseAuth auth = FirebaseAuth.instance;
-            // isLogin = auth.currentUser == null ? false : true;
-            // print(auth.currentUser);
-            // print(Text('islogin_' + isLogin.toString()));
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            label: Text('모임 리스트').data,
-            icon: Icon(Icons.list),
-          ),
-          BottomNavigationBarItem(
-            label: Text('지도').data,
-            icon: Icon(Icons.map),
-          ),
-          BottomNavigationBarItem(
-            label: Text('내 일정').data,
-            icon: Icon(Icons.schedule),
-          ),
-          BottomNavigationBarItem(
-            label: _isLogin.value ? Text('프로필').data : Text('로그인').data,
-            icon: Icon(Icons.person),
-          ),
-        ],
-      ),
-      // bottomNavigationBar: BottomAppBar(
-      //   child: SizedBox(
-      //     height: 70,
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //       children: [
-      //         Icon(Icons.accessibility),
-      //         Icon(Icons.access_alarms),
-      //         Icon(Icons.accessibility),
-      //         Icon(Icons.accessibility),
-      //       ],
-      //     ),
-      //   )
-      // ),
-    );
+    print('_MyHomePageState_build');
 
-    // return Scaffold(
-    //     appBar: AppBar(title: Text('Tennis Together'), actions: [
-    //       IconButton(
-    //           icon: Icon(Icons.logout),
-    //           onPressed: () {
-    //             Provider.of<PageNotifier>(context, listen: false)
-    //                 .goToOtherPage(AuthPage.pageName);
-    //           })
-    //     ]));
+    return Consumer2<LoginNotifier, PageNotifier>(
+        builder: (context, LoginNotifier, PageNotifier, child) {
+      return Scaffold(
+          // appBar: AppBar(
+          //   backgroundColor: Colors.transparent,
+          //   title: Text('Tennis Together'),
+          //   // actions: [
+          //   //   IconButton(
+          //   //       icon: Icon(Icons.logout),
+          //   //       onPressed: () {
+          //   //         print('login check');
+          //   //         Provider.of<PageNotifier>(context, listen: false)
+          //   //             .goToOtherPage(AuthPage.pageName);
+          //   //       })
+          //   // ]
+          // ),
+          body: _children[PageNotifier.selectedIndex],
+              // ChangeNotifierProvider(
+              //     create: (_) => PageNotifier(),
+              //     child:
+          //     Navigator(
+          //   pages: [
+          //     MaterialPage(
+          //         key: const ValueKey(MatchList.pageName), child: MatchList()),
+          //     if (PageNotifier.currentPage == MatchList.pageName ||
+          //         PageNotifier.currentIndex == 0)
+          //       MatchListPage(),
+          //     if (PageNotifier.currentPage == MySchedule.pageName ||
+          //         PageNotifier.currentIndex == 1)
+          //       MySchedulePage(),
+          //     if (PageNotifier.currentPage == Map.pageName ||
+          //         PageNotifier.currentIndex == 2)
+          //       MapPage(),
+          //     if (PageNotifier.currentPage == AuthPage.pageName ||
+          //         PageNotifier.currentIndex == 3)
+          //       LoginProfileSwitchPage(),
+          //   ],
+          //   onPopPage: (route, result) {
+          //     if (!route.didPop(result)) {
+          //       return false;
+          //     }
+          //     return true;
+          //   },
+          // ),
+          // ), // MultiProvider(
+          //           providers: [
+          //             ChangeNotifierProvider(create: (_) => PageNotifier()),
+          //           ],
+          //           child: _children[_selectedIndex],
+          //       ),
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.grey,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.white.withOpacity(.60),
+            selectedFontSize: 14,
+            unselectedFontSize: 14,
+            // currentIndex: provider.currentIndex,
+            currentIndex: _selectedIndex,
+            //현재 선택된 Index
+            onTap: (int index) {
+              // provider.goToOtherPageByIndex(index);
+              // setState(() {
+              //   _selectedIndex = index;
+              // });
+              PageNotifier.goToOtherPageByIndex(index);
+              // Provider.of<PageNotifier>(context, listen: false)
+              //     .goToOtherPageByIndex(index);
+            },
+            items: [
+              BottomNavigationBarItem(
+                label: Text('모임 리스트').data,
+                icon: Icon(Icons.list),
+              ),
+              BottomNavigationBarItem(
+                label: Text('지도').data,
+                icon: Icon(Icons.map),
+              ),
+              BottomNavigationBarItem(
+                label: Text('내 일정').data,
+                icon: Icon(Icons.schedule),
+              ),
+              BottomNavigationBarItem(
+                label:
+                    LoginNotifier.isLogin ? Text('프로필').data : Text('로그인').data,
+                //LoginProfileSwitch().GetStr(),
+                icon: Icon(Icons.person),
+              ),
+            ],
+          )
+
+          //BottomNavigationBar(
+          //   type: BottomNavigationBarType.fixed,
+          //   backgroundColor: Colors.grey,
+          //   selectedItemColor: Colors.white,
+          //   unselectedItemColor: Colors.white.withOpacity(.60),
+          //   selectedFontSize: 14,
+          //   unselectedFontSize: 14,
+          //   currentIndex: _selectedIndex,
+          //   //현재 선택된 Index
+          //   onTap: (int index) {
+          //     setState(() {
+          //       _selectedIndex = index;
+          //     });
+          //   },
+          //   items: [
+          //     BottomNavigationBarItem(
+          //       label: Text('모임 리스트').data,
+          //       icon: Icon(Icons.list),
+          //     ),
+          //     BottomNavigationBarItem(
+          //       label: Text('지도').data,
+          //       icon: Icon(Icons.map),
+          //     ),
+          //     BottomNavigationBarItem(
+          //       label: Text('내 일정').data,
+          //       icon: Icon(Icons.schedule),
+          //     ),
+          //     BottomNavigationBarItem(
+          //       label: LoginProfileSwitch().GetStr(),//_isLogin.value ? Text('프로필').data : Text('로그인').data,
+          //       icon: Icon(Icons.person),
+          //     ),
+          //   ],
+          // ),
+          );
+    });
+
+    // r   ]));
   }
-}
 
-class BottomNavigationBarProvider with ChangeNotifier {
-  int _currentIndex = 0;
-  // bool
-  int get currentIndex => _currentIndex;
-
-  set currentIndex(int index) {
-    _currentIndex = index;
-    notifyListeners();
+  Widget Test() {
+    int a = 1;
+    return LoginProfileSwitch();
   }
 }

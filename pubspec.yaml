@@ -39,6 +39,13 @@ dependencies:
   cloud_firestore: ^3.1.5
   firebase_auth: ^3.3.4
   google_sign_in: ^5.2.1
+  firebase_storage: ^10.2.4
+  image_picker: ^0.8.4+4
+  gender_picker: ^1.1.0
+  numberpicker: ^2.1.1
+  kpostal: ^0.4.0
+  kakao_flutter_sdk: ^0.9.0
+  time_range_picker: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +73,10 @@ flutter:
     - assets/CNxj.gif
     - assets/google_logo.png
     - assets/naver_logo.png
+    - assets/tennis_male.png
+    - assets/tennis_female.png
+    - assets/blankUser.png
+    - assets/bg_tennis.jpeg
 #    - images/a_dot_burr.jpeg
 #    - images/a_dot_ham.jpeg
 

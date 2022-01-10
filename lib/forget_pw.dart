@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tennis_together/matchList.dart';
 
 class ForgetPw extends StatefulWidget {
   @override
@@ -32,7 +33,7 @@ class _ForgetPwState extends State<ForgetPw> {
                       _buildTextFormField('Email Address', _emailController),
                       ElevatedButton(
                           onPressed: () {
-                            _ChangePw();
+                            _ChangePw(context);
                           },
                           style: ButtonStyle(
                             foregroundColor:
@@ -77,7 +78,7 @@ class _ForgetPwState extends State<ForgetPw> {
     );
   }
 
-  void _ChangePw() async {
+  void _ChangePw(BuildContext context) async {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(
@@ -87,6 +88,14 @@ class _ForgetPwState extends State<ForgetPw> {
           .showSnackBar(SnackBar(
           content: Text('Email을 확인하여 비밀번호 변경해주세요.'),
           duration: const Duration(seconds: 3)));
+
+
+      // provider.CheckLogin();
+      //
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => MatchListPage()));
     } on FirebaseAuthException catch (e) {
       Text txt = const Text('알 수 없는 예외가 발생했습니다.');
 

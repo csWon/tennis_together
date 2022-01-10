@@ -4,15 +4,34 @@ import 'package:tennis_together/welcome_login.dart';
 import 'package:flutter/cupertino.dart';
 
 class PageNotifier extends ChangeNotifier{
-  String _currentPage = MyHomePage.pageName;
-  String get currentPage =>_currentPage;
+  bool usingIntFlag = true;
+  String _selectedPage = MyHomePage.pageName;
+  int _selectedIndex = 0;
+
+  String get selectedPage =>_selectedPage;
+  int get selectedIndex => _selectedIndex;
 
   void goToMain(){
-    _currentPage = MyHomePage.pageName;
+    _selectedPage = MyHomePage.pageName;
+    usingIntFlag = false;
     notifyListeners();
   }
   void goToOtherPage(String name){
-    _currentPage = name;
+    print('before_$_selectedPage');
+    _selectedPage = name;
+    print('after_$_selectedPage');
+    usingIntFlag = false;
+    notifyListeners();
+  }
+  void goToOtherPageByIndex(int i){
+    if(i==0){
+      _selectedPage = 'MySchedulePage';
+    }
+
+    usingIntFlag = true;
+    print(i);
+    print('index_$_selectedPage');
+    _selectedIndex = i;
     notifyListeners();
   }
 }

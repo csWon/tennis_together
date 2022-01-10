@@ -1,11 +1,28 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:tennis_together/provider/login_notifier.dart';
+import 'package:provider/provider.dart';
+import 'package:tennis_together/provider/login_notifier.dart';
 
-class Map extends StatefulWidget {
+class MapPage extends Page {
+  static final pageName = 'MapPage';
+
   @override
-  _FirstState createState() => _FirstState();
+  Route createRoute(BuildContext context) {
+    return MaterialPageRoute(settings: this, builder: (context) => Map());
+  }
 }
 
-class _FirstState extends State<Map> {
+class Map extends StatefulWidget {
+  static String pageName = 'Map';
+
+  String get _pageName => pageName;
+
+  @override
+  _MapState createState() => _MapState();
+}
+
+class _MapState extends State<Map> {
   @override
   Widget build(BuildContext context) {
     return Container(
