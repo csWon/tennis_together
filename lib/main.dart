@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tennis_together/forget_pw.dart';
 import 'package:tennis_together/login_profile_switch.dart';
+import 'package:tennis_together/provider/filter_notifier.dart';
 import 'package:tennis_together/provider/login_notifier.dart';
 
 import 'package:tennis_together/provider/page_notifier.dart';
@@ -40,7 +41,8 @@ class MyApp extends StatelessWidget {
     //1111
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => PageNotifier()),
-      ChangeNotifierProvider(create: (_) => LoginNotifier())
+      ChangeNotifierProvider(create: (_) => LoginNotifier()),
+      ChangeNotifierProvider(create: (_) => FilterNotifier()),
     ], child: MaterialApp(home: MyHomePage()));
 
     // return Scaffold(body: MyHomePage());

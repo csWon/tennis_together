@@ -11,6 +11,8 @@ class PageNotifier extends ChangeNotifier{
   String get selectedPage =>_selectedPage;
   int get selectedIndex => _selectedIndex;
 
+  bool refreshThisPage = false;
+
   void goToMain(){
     _selectedPage = MyHomePage.pageName;
     usingIntFlag = false;
@@ -24,14 +26,22 @@ class PageNotifier extends ChangeNotifier{
     notifyListeners();
   }
   void goToOtherPageByIndex(int i){
-    if(i==0){
-      _selectedPage = 'MySchedulePage';
-    }
+    // if(i==0){
+    //   _selectedPage = 'MySchedulePage';
+    // }
 
     usingIntFlag = true;
     print(i);
     print('index_$_selectedPage');
     _selectedIndex = i;
+    notifyListeners();
+  }
+
+  void refreshPage(){
+    print(refreshThisPage);
+    refreshThisPage = !refreshThisPage;
+    print(refreshThisPage);
+    // _selectedIndex = 1;
     notifyListeners();
   }
 }

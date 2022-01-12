@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:tennis_together/map.dart';
 import 'package:tennis_together/MySchedule.dart';
 import 'package:tennis_together/matchList.dart';
-
+import 'package:tennis_together/styles.dart';
 import 'login_profile_switch.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -54,9 +54,9 @@ class _MyHomePageState extends State<MyHomePage> {
           //   // ]
           // ),
           body: _children[PageNotifier.selectedIndex],
-              // ChangeNotifierProvider(
-              //     create: (_) => PageNotifier(),
-              //     child:
+          // ChangeNotifierProvider(
+          //     create: (_) => PageNotifier(),
+          //     child:
           //     Navigator(
           //   pages: [
           //     MaterialPage(
@@ -89,9 +89,12 @@ class _MyHomePageState extends State<MyHomePage> {
           //       ),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.grey,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.white.withOpacity(.60),
+            backgroundColor: AppColors.backgroundFadedColor,
+            selectedItemColor: Colors.grey,
+            selectedLabelStyle: TextStyle(color: Colors.black87),
+            unselectedItemColor: Colors.black87.withOpacity(.60),
+            unselectedLabelStyle:
+                TextStyle(color: Colors.black87.withOpacity(.60)),
             selectedFontSize: 14,
             unselectedFontSize: 14,
             // currentIndex: provider.currentIndex,
@@ -109,21 +112,21 @@ class _MyHomePageState extends State<MyHomePage> {
             items: [
               BottomNavigationBarItem(
                 label: Text('모임 리스트').data,
-                icon: Icon(Icons.list),
+                icon: Icon(Icons.list, color: AppColors.mainColor),
               ),
               BottomNavigationBarItem(
                 label: Text('지도').data,
-                icon: Icon(Icons.map),
+                icon: Icon(Icons.map, color: AppColors.mainColor),
               ),
               BottomNavigationBarItem(
                 label: Text('내 일정').data,
-                icon: Icon(Icons.schedule),
+                icon: Icon(Icons.schedule, color: AppColors.mainColor),
               ),
               BottomNavigationBarItem(
                 label:
                     LoginNotifier.isLogin ? Text('프로필').data : Text('로그인').data,
                 //LoginProfileSwitch().GetStr(),
-                icon: Icon(Icons.person),
+                icon: Icon(Icons.person, color: AppColors.mainColor),
               ),
             ],
           )

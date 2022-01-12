@@ -1,15 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tennis_together/custom_rect_tween.dart';
 import 'package:tennis_together/fakeMatchs.dart';
+import 'package:tennis_together/provider/filter_notifier.dart';
+import 'package:tennis_together/provider/page_notifier.dart';
 import 'package:tennis_together/styles.dart';
 
 import 'drop_down_menu.dart';
 import 'hero_dialog_route.dart';
+import 'match_filter_options.dart';
 import 'models.dart';
 
 class MatchListPage extends Page {
   static final pageName = 'MySchedulePage';
+
+  // var fo = Singleton;
 
   @override
   Route createRoute(BuildContext context) {
@@ -28,6 +34,7 @@ class MatchList extends StatefulWidget {
 }
 
 class _MatchListState extends State<MatchList> {
+
   //오늘 날짜, 거주지역에 해당하는 경기일정을 우선 가져
   var filterOptions = List.of(IntType.values);
   final items = List.generate(1000, (index) => '$index');
@@ -39,49 +46,26 @@ class _MatchListState extends State<MatchList> {
 
   @override
   Widget build(BuildContext context) {
+    print('_MatchListState');
     UniqueKey _accKey = UniqueKey();
-
-    return Scaffold(
-      // body: Stack(
-      //   children: [
-      //     Container(
-      //       decoration: const BoxDecoration(
-      //         gradient: LinearGradient(
-      //           begin: Alignment.topCenter,
-      //           end: Alignment.bottomCenter,
-      //           colors: [
-      //             AppColors.backgroundFadedColor,
-      //             AppColors.backgroundColor,
-      //           ],
-      //           stops: [0.0, 1],
-      //         ),
-      //       ),
-      //     ),
-      //     SafeArea(
-      //       child: _TodoListContent(
-      //         todos: fakeData,
-      //       ),
-      //     ),
-      //     // const Align(
-      //     // alignment: Alignment.bottomRight,
-      //     // child: AddTodoButton(),
-      //     // )
-      //   ],
-      // ),
-      body: CustomScrollView(
-        slivers: [
-          // Add the app bar to the CustomScrollView.
-          _BuildSilverAppBar(),
-          // Next, create a SliverList
-          _BuildSilverBody(),
-        ],
-      ),
-    );
+    // return Consumer2<FilterNotifier, PageNotifier>(builder: (context, FilterNotifier,PageNotifier, child) {
+      return Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            // Add the app bar to the CustomScrollView.
+            _BuildSilverAppBar(),
+            // Next, create a SliverList
+            _BuildSilverBody(),
+          ],
+        ),
+      );
+    // });
   }
 
   SliverAppBar _BuildSilverAppBar() {
+    print('_BuildSilverAppBar');
     return SliverAppBar(
-      backgroundColor:AppColors.backgroundColor,
+      backgroundColor: AppColors.backgroundColor,
       // Provide a standard title.
       // title: Text('title'),
       // Allows the user to reveal the app bar if they begin scrolling
@@ -116,7 +100,11 @@ class _MatchListState extends State<MatchList> {
       description: 'hihi',
     );
     List<Todo> _todos = [
-      a,a,a,a,a,
+      a,
+      a,
+      a,
+      a,
+      a,
     ];
     return SliverList(
       // Use a delegate to build items as they're scrolled on screen.
@@ -341,11 +329,13 @@ class _FilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    RangeValues? rv =
+        Provider.of<FilterNotifier>(context, listen: false).currentRangeValues;
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
           HeroDialogRoute(
-            builder: (context) => const Center(
+            builder: (context) => Center(
               child: _FilterButtonPopup(),
             ),
             settings: RouteSettings(),
@@ -362,13 +352,13 @@ class _FilterButton extends StatelessWidget {
         child: Container(
           // child: Center(
           // child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
           child: Row(
               // crossAxisAlignment: CrossAxisAlignment.sp,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Filter',
+                  rv == null ? 'Filter' : 'NTRP : ${rv.start.toStringAsFixed(1)}-${rv.end.toStringAsFixed(1)}',
                   style: TextStyle(color: Colors.black),
                 ),
                 Icon(Icons.keyboard_arrow_down),
@@ -403,32 +393,121 @@ class _FilterButton extends StatelessWidget {
   }
 }
 
-class _FilterButtonPopup extends StatelessWidget {
-  const _FilterButtonPopup({Key? key}) : super(key: key);
+class _FilterButtonPopup extends StatefulWidget {
+  static String pageName = '_FilterButtonPopup';
+
+  String get _pageName => pageName;
+
+  @override
+  _FilterButtonPopupState createState() => _FilterButtonPopupState();
+}
+
+class _FilterButtonPopupState extends State<_FilterButtonPopup> {
+  bool _isFirst = true;
+  RangeValues _currentRangeValues = const RangeValues(2.0,3.5);// : tmp;
 
   @override
   Widget build(BuildContext context) {
+    print('_FilterButtonPopupState ${_currentRangeValues.start}_${_currentRangeValues.end}');
+    RangeValues tmp =  Provider.of<FilterNotifier>(context, listen: false).currentRangeValues;
+    print('tmp ${tmp.start}_${tmp.end}');
+
     return Hero(
       tag: 'filter_button_tag',
       createRectTween: (begin, end) {
         return CustomRectTween(begin: begin, end: end);
       },
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Material(
-          borderRadius: BorderRadius.circular(16),
-          color: AppColors.cardColor,
-          child: const SizedBox(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text('test'),
-            ),
+      // child: Padding(
+      //   padding: const EdgeInsets.all(50.0),
+      child: Material(
+        borderRadius: BorderRadius.circular(16),
+        color: AppColors.cardColor,
+        child: SizedBox(
+          height: 130,
+          width: 300,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(children: [
+              Row(children: [
+                Text('NTRP : '),
+                RangeSlider(
+                  values: _currentRangeValues,
+                  max: 7.0,
+                  min: 1.0,
+                  divisions: 12,
+                  labels: RangeLabels(
+                    _currentRangeValues.start.toStringAsFixed(1),
+                    _currentRangeValues.end.toStringAsFixed(1),
+                  ),
+                  onChanged: (RangeValues values) {
+                    setState(() {
+                      _currentRangeValues = values;
+                      // _isFirst=false;
+                    });
+                  },
+                ),
+              ]),
+              ElevatedButton(
+                  onPressed: () {
+                    print('btn');
+                    Provider.of<FilterNotifier>(context, listen: false).SetNtrpRange(_currentRangeValues);
+                    // _isFirst = false;
+                    // Provider.of<PageNotifier>(context, listen: false).refreshPage();
+
+                    Navigator.pop(context);
+                  },
+                  child: Text('적용하기'))
+            ]),
+            // ),
           ),
         ),
       ),
     );
   }
 }
+//
+// class _FilterButtonPopup extends StatelessWidget {
+//   const _FilterButtonPopup({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Hero(
+//       tag: 'filter_button_tag',
+//       createRectTween: (begin, end) {
+//         return CustomRectTween(begin: begin, end: end);
+//       },
+//       child: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Material(
+//           borderRadius: BorderRadius.circular(16),
+//           color: AppColors.cardColor,
+//           child: SizedBox(
+//             child: Padding(
+//               padding: EdgeInsets.all(16.0),
+//               child: Column(children: [
+//                 Text('NTRP : '),
+//                 Slider(
+//                   activeColor: Colors.yellowAccent,
+//                   // inactiveColor: Colors.redAccent,
+//                   value: 4,
+//                   max: 7.0,
+//                   min: 1.0,
+//                   divisions: 12,
+//                   label: 4.toString(),
+//                   onChanged: (double value) {
+//                     setState(() {
+//                       // _currentNTRPValue = value;
+//                     });
+//                   },
+//                 ),
+//               ]),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _TodoCard extends StatelessWidget {
   /// {@macro todo_card}

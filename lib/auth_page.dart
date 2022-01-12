@@ -243,6 +243,7 @@ class _AuthWidgetState extends State<AuthWidget> {
 
       var provider2 = Provider.of<PageNotifier>(context, listen: false);
       provider2.goToOtherPageByIndex(0);
+
       // provider2.goToOtherPage(MatchList.pageName);
 
     } on FirebaseAuthException catch (e) {
