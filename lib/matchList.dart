@@ -215,7 +215,8 @@ class _MatchListState extends State<MatchList> {
             //     );
             //   }).toList(),
             // ),
-            const _FilterButton(),
+            // const _FilterButton(),
+            _filterBtn_ntrp(),
             IconButton(
               icon: const Icon(Icons.add_outlined),
               onPressed: () {
@@ -321,6 +322,157 @@ class IntType {
 //         )
 //       ]));
 // }
+
+class _filterBtn_datetime extends StatefulWidget {
+  @override
+  _filterBtn_datetimeState createState() => _filterBtn_datetimeState();
+}
+
+class _filterBtn_datetimeState extends State<_filterBtn_datetime> {
+  refresh() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+}
+
+class _filterBtn_ntrp extends StatefulWidget {
+  @override
+  _filterBtn_ntrpState createState() => _filterBtn_ntrpState();
+}
+
+class _filterBtn_ntrpState extends State<_filterBtn_ntrp> {
+  refresh(){
+    setState(() {
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    RangeValues? rv = Provider.of<FilterNotifier>(context, listen: false).currentRangeValues;
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          HeroDialogRoute(
+            builder: (context) => Center(
+              child: _FilterButtonPopup2(notifyParent: refresh,),
+            ),
+            settings: RouteSettings(),
+          ),
+        );
+      },
+      child: Hero(
+        createRectTween: (begin, end) {
+          return CustomRectTween(begin: begin, end: end);
+        },
+        tag: 'filter_button_tag',
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          child: Row(
+            // crossAxisAlignment: CrossAxisAlignment.sp,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  rv == null ? 'Filter' : 'NTRP : ${rv.start.toStringAsFixed(1)}-${rv.end.toStringAsFixed(1)}',
+                  style: TextStyle(color: Colors.black),
+                ),
+                Icon(Icons.keyboard_arrow_down),
+              ]),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            color: Colors.blueGrey,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FilterButtonPopup2 extends StatefulWidget {
+  static String pageName = '_FilterButtonPopup';
+  String get _pageName => pageName;
+
+  final Function() notifyParent;
+  _FilterButtonPopup2({Key? key, required this.notifyParent}) : super(key: key);
+
+  @override
+  _FilterButtonPopupState2 createState() => _FilterButtonPopupState2(notifyParent:notifyParent);
+}
+
+class _FilterButtonPopupState2 extends State<_FilterButtonPopup2> {
+  final Function() notifyParent;
+  _FilterButtonPopupState2({Key? key, required this.notifyParent});
+
+  bool _isFirst = true;
+  RangeValues _currentRangeValues = const RangeValues(2.0,3.5);// : tmp;
+
+  @override
+  Widget build(BuildContext context) {
+    print('_FilterButtonPopupState ${_currentRangeValues.start}_${_currentRangeValues.end}');
+    RangeValues tmp =  Provider.of<FilterNotifier>(context, listen: false).currentRangeValues;
+    print('tmp ${tmp.start}_${tmp.end}');
+
+    return Hero(
+      tag: 'filter_button_tag',
+      createRectTween: (begin, end) {
+        return CustomRectTween(begin: begin, end: end);
+      },
+      // child: Padding(
+      //   padding: const EdgeInsets.all(50.0),
+      child: Material(
+        borderRadius: BorderRadius.circular(16),
+        color: AppColors.cardColor,
+        child: SizedBox(
+          height: 130,
+          width: 300,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(children: [
+              Row(children: [
+                Text('NTRP : '),
+                RangeSlider(
+                  values: _currentRangeValues,
+                  max: 7.0,
+                  min: 1.0,
+                  divisions: 12,
+                  labels: RangeLabels(
+                    _currentRangeValues.start.toStringAsFixed(1),
+                    _currentRangeValues.end.toStringAsFixed(1),
+                  ),
+                  onChanged: (RangeValues values) {
+                    setState(() {
+                      _currentRangeValues = values;
+                      // _isFirst=false;
+                    });
+                  },
+                ),
+              ]),
+              ElevatedButton(
+                  onPressed: () {
+                    print('btn');
+                    Provider.of<FilterNotifier>(context, listen: false).SetNtrpRange(_currentRangeValues);
+                    // _isFirst = false;
+                    // Provider.of<PageNotifier>(context, listen: false).refreshPage();
+                    notifyParent();
+                    Navigator.pop(context);
+                  },
+                  child: Text('적용하기'))
+            ]),
+            // ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
 
 class _FilterButton extends StatelessWidget {
   const _FilterButton({
